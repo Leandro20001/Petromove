@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Perfil do Usuário — Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- left: perfil resumido -->
+    <aside class="card">
+      <div class="profile-top">
+        <div id="avatar" class="avatar">LF</div>
+        <div style="flex:1">
+          <h2 id="displayName">Leandro Ferreira</h2>
+          <p class="muted" id="displayEmail">leandro@example.com</p>
+          <div style="margin-top:8px" class="actions">
+            <button class="btn small" id="editProfileBtn">Editar perfil</button>
+            <button class="small danger" id="deleteAccountBtn">Excluir conta</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="list">
+        <div>
+          <div class="section-title"><strong>Preferências</strong><span class="muted">opcional</span></div>
+          <div class="muted-block">
+            <label>Combustível preferido</label>
+            <select id="fuelPref">
+              <option value="">(nenhum)</option>
+              <option value="gasolina">Gasolina</option>
+              <option value="etanol">Etanol</option>
+              <option value="diesel">Diesel</option>
+              <option value="flex">Flex</option>
+            </select>
+
+            <div style="margin-top:10px">
+              <label>Marcas favoritas</label>
+              <div id="brandContainer" class="tags" style="margin-top:8px"></div>
+              <input type="text" id="brandInput" placeholder="Digite e pressione Enter para adicionar" style="margin-top:8px" />
+            </div>
+
+            <div style="margin-top:10px">
+              <label>Margem de preço (R$)</label>
+              <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
+                <input type="number" id="priceMargin" placeholder="ex: 0.30" step="0.01" />
+                <small class="muted">influenciará recomendações</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title"><strong>Carro (opcional)</strong></div>
+          <div class="muted-block">
+            <label>Escolha um carro</label>
+            <select id="carSelect">
+              <option value="">(nenhum)</option>
+              <option value='{"name":"Fiat Uno","consumo":12,"tanque":50}'>Fiat Uno — 12 km/l</option>
+              <option value='{"name":"VW Gol","consumo":11,"tanque":45}'>VW Gol — 11 km/l</option>
+              <option value='{"name":"Toyota Corolla","consumo":14,"tanque":55}'>Toyota Corolla — 14 km/l</option>
+            </select>
+            <div style="margin-top:8px" id="carSpecs" class="muted">Nenhum carro selecionado</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title"><strong>Avaliações feitas</strong></div>
+          <div id="reviewsList" class="muted-block">Nenhuma avaliação ainda</div>
+        </div>
+
+        <div>
+          <div class="section-title"><strong>Histórico de postos vistos</strong></div>
+          <div id="historyList" class="muted-block">Nenhum posto visitado ainda</div>
+        </div>
+      </div>
+
+      <footer>
+        <div style="margin-top:12px">Dados salvos no <strong>localStorage</strong>. Use <em>Excluir conta</em> para limpar.</div>
+      </footer>
+    </aside>
+
+    <!-- right: controles -->
+    <main class="card">
+      <div class="section-title">
+        <h3>Painel de gerenciamento</h3>
+        <small class="muted">Teste as funcionalidades abaixo</small>
+      </div>
+
+      <div class="grid">
+        <div class="full">
+          <label>Adicionar posto ao histórico</label>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="stationName" placeholder="Nome do posto" />
+            <input id="stationPrice" placeholder="Preço (ex: 5.49)" type="number" step="0.01" />
+            <select id="stationBrand"><option value="Shell">Shell</option><option value="Ipiranga">Ipiranga</option><option value="BR">BR</option><option value="Ale">Ale</option></select>
+            <button class="btn" id="addStationBtn">Adicionar</button>
+          </div>
+        </div>
+
+        <div>
+          <label>Adicionar avaliação</label>
+          <textarea id="reviewText" placeholder="Comentário..." rows="2"></textarea>
+          <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+            <select id="reviewStation"></select>
+            <select id="reviewScore"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select>
+            <button class="btn" id="addReviewBtn">Avaliar</button>
+          </div>
+        </div>
+
+        <div>
+          <label>Preferências rápidas</label>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="btn" id="setFuelGas">Gasolina</button>
+            <button class="btn" id="setFuelEthanol">Etanol</button>
+            <button class="btn" id="clearPrefs">Limpar prefs</button>
+          </div>
+        </div>
+
+        <div>
+          <label>Exportar / Importar</label>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="exportBtn" class="btn">Exportar JSON</button>
+            <input type="file" id="importFile" />
+          </div>
+        </div>
+      </div>
+
+      <hr style="margin:18px 0;border:none;border-top:1px solid rgba(255,255,255,0.04)" />
+
+      <div class="section-title"><strong>Preview — Recomendações</strong><small class="muted">Simula como preferências influenciam</small></div>
+      <div id="recommendation" class="muted-block">Nenhuma recomendação (adicione histórico)</div>
+    </main>
+  </div>
+
+  <!-- modal -->
+  <div id="modal" class="modal">
+    <div class="card modal-content">
+      <div class="modal-header">
+        <strong>Editar perfil</strong>
+        <button id="closeModal" class="small">Fechar</button>
+      </div>
+
+      <div class="grid">
+        <div class="full"><label>Nome</label><input id="inputName" /></div>
+        <div><label>Email</label><input id="inputEmail" type="email" /></div>
+        <div><label>Senha</label><input id="inputPass" type="password" placeholder="(deixe em branco)" /></div>
+        <div class="full"><label>Foto de perfil (URL)</label><input id="inputAvatar" placeholder="https://..." /></div>
+
+        <div class="full modal-actions">
+          <button id="saveProfileBtn" class="btn">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
